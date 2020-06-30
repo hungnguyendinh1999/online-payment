@@ -1,0 +1,14 @@
+{% extends 'template.html' %}
+{% load static %}
+{% block content %}
+	<div>
+		<h2> Pick an option to continue</h2>
+		<p>Each option will give you the power to test the Card API</p>
+        <hr>
+        <a class="myButton" href="{% url 'manage-payment-methods.html' %}">Manage Cards</a>
+        <a class="myButton" href="{% url 'index' %}">Pay for subscription</a>
+        <a class="myButton" href="{% url 'index' %}"></a>
+		<a class="myButton" href="{% url 'index' %}"></a>
+	</div>
+
+{% endblock content %}
