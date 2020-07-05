@@ -16,7 +16,7 @@ def managePaymentMethods(request):
     return render(request, 'manage-payment-methods.html')
     
 def charge(request):
-    amount = 5 #remember to make this dynamic
+    amount = 690 #remember to make this dynamic
 
     if request.method == 'POST':
         print('Data:', request.POST)

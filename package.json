@@ -13,7 +13,8 @@
     "migrate": "python manage.py migrate",
     "createmigration": "run(){ ./manage.py makemigrations $1; }; run",
     "mysql": "mysql -uonlinepayment -ponlinepayment",
-    "save": "pip freeze > requirements.txt"
+    "save": "pip freeze > requirements.txt",
+    "createsuperuser": "python manage.py createsuperuser"
   },
   "author": "",
   "license": "MIT"
