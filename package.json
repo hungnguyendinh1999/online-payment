@@ -15,7 +15,9 @@
     "createM": "python manage.py makemigrations",
     "mysql": "mysql -uonlinepayment -ponlinepayment",
     "save": "pip freeze > requirements.txt",
-    "createsuperuser": "python manage.py createsuperuser"
+    "createsuperuser": "python manage.py createsuperuser",
+    "random": "pip install -r requirements.txt"
+    
   },
   "author": "",
   "license": "MIT"

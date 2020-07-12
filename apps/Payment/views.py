@@ -47,6 +47,10 @@ def successMsg(request, args):
     return render(request, 'success.html', {'amount':amount})
 
 def checkCustomer(request): #not done, save for later
+    try:
+        customer = stripe.Customer.retrieve(customerID)
+    except Exception:
+        print("you suck")
     #if not yet exist, create new
     customer = stripe.Customer.create(
             email=request.POST['email'],
@@ -55,8 +59,7 @@ def checkCustomer(request): #not done, save for later
             )
     # otherwise identify and retrieve
     customerID=None #retrieve customer ID from database
-    customer = stripe.Customer.retrieve(customerID)
-
+    
 def saveCard(request):
     card = stripe.Customer.create_source( # CREATE A CARD from input FORM
             customer.id,
@@ -92,25 +95,24 @@ def createCharge(amount):
             currency = 'usd',
             description = 'example charge',
             )
+
 from .models import Customer
-def createCustomer(name, email, username=None, password=None, source=None):
+def createCustomer(self):
     # Validate username, password, email, and source (tokenID)
     # get stripe_customerID
     customer = stripe.Customer.create(
-        email=email,
-        name =name,
-        source = source, #check if source = NOne is possible
+        email='email@gmail.com',
+        name = 'Testiman',
+        #check if source = None is possible
         )
 
     c = Customer(
-        username = username,
+        username = 'sirTest',
         stripe_customerID = customer.id,
-        password = password,
-        name = name,
-        email = email
+        password = 'password',
+        name = 'Testiman',
+        email = 'email@gmail.com'
         )
 
     # do try/catch here
     c.save()
-
-

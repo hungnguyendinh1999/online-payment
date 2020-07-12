@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('charge/', views.charge, name='charge'),
     path('success/<str:args>/', views.successMsg, name='success'),
+    path('createUser/', views.createCustomer, name='testing')
 ]
