@@ -12,6 +12,7 @@
     "createapp": "run(){ cd apps/; python ../manage.py startapp $1; cd ../; }; run",
     "migrate": "python manage.py migrate",
     "createmigration": "run(){ ./manage.py makemigrations $1; }; run",
+    "createM": "python manage.py makemigrations",
     "mysql": "mysql -uonlinepayment -ponlinepayment",
     "save": "pip freeze > requirements.txt",
     "createsuperuser": "python manage.py createsuperuser"

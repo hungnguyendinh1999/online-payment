@@ -75,17 +75,29 @@ WSGI_APPLICATION = 'django_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'onlinepayment',
+#         'USER': 'onlinepayment',
+#         'PASSWORD': 'onlinepayment',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'onlinepayment',
-        'USER': 'onlinepayment',
-        'PASSWORD': 'onlinepayment',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'djongo',
+        'CLIENT':{
+            'name': 'onlinepayment',
+            'host': 'mongodb+srv://onlinepayment:onlinepayment@cluster0.gjign.mongodb.net/test?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true',
+            'username': 'onlinepayment',
+            'password': 'onlinepayment',
+            "authMechanism": "SCRAM-SHA-1",
+        }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

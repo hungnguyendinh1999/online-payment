@@ -92,3 +92,25 @@ def createCharge(amount):
             currency = 'usd',
             description = 'example charge',
             )
+from .models import Customer
+def createCustomer(name, email, username=None, password=None, source=None):
+    # Validate username, password, email, and source (tokenID)
+    # get stripe_customerID
+    customer = stripe.Customer.create(
+        email=email,
+        name =name,
+        source = source, #check if source = NOne is possible
+        )
+
+    c = Customer(
+        username = username,
+        stripe_customerID = customer.id,
+        password = password,
+        name = name,
+        email = email
+        )
+
+    # do try/catch here
+    c.save()
+
+
