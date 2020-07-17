@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import JsonResponse
 
+
 # stripe start here
 import stripe
 stripe.api_key = 'sk_test_51GvDgzHHgVlfHoWQCztMqjdhzmLoUa8UJm92wTJn8TfhNn9bIzxyAFZqMLIDY4eIXbZcweZMDhvdMKBzyOLjm42u001alsw2aN'
@@ -116,3 +117,75 @@ def createCustomer(self):
 
     # do try/catch here
     c.save()
+
+'''
+Below is the REST API setup.
+This will be used as the BASE to build APIs with Stripe
+'''
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import CustomerSerializer
+from .models import Customer 
+
+@api_view(['GET'])
+def apiOverview(request):
+    api_urls = {
+        'Card': {
+            'List': '/card-list/',              # GET a list of cards of current customer
+            'Add Card': '/card-add/',                # POST add/save a new card
+            'Delete': '/card-delete/<str:pk>',  # DELETE a card
+        },
+        'Customer': {
+             'List': '/cus-list/',              # GET a list of customers
+            'Detail': '/cus-detail/<str:pk>',   # GET a specific customer info
+            'Create': '/cus-create/',           # POST create a new customer
+            'Update': '/cus-update/<str:pk>',   # POST update a customer info
+            'Delete': '/cus-delete/<str:pk>',   # DELETE a customer    
+        }
+    }
+
+    return Response(api_urls)
+
+# GET a list of customers
+@api_view(['GET'])
+def customerList(request):
+    customers = Customer.objects.all()
+    serializer = CustomerSerializer(customers, many=True)
+    return Response(serializer.data)
+
+# GET a list of customers
+@api_view(['GET'])
+def customerDetail(request, pk):
+    customers = Customer.objects.get(id=pk) 
+    serializer = CustomerSerializer(customers, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def customerCreate(request):
+    # create a Stripe Customer here
+    # retrieve Stripe Customer.id
+    serializer = CustomerSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def customerUpdate(request, pk):
+    # retrieve the Stripe Customer id here
+    # update Customer on stripe
+    customers = Customer.objects.get(id=pk)
+    serializer = CustomerSerializer(instance=customers, data=request.data)
+    if serializer.is_valid():
+         serializer.save()
+
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def customerDelete(request, pk):
+    # retrieve the Stripe Customer id here
+    # remove Customer from Stripe
+    customers = Customer.objects.get(id=pk)
+    customers.delete()
+
+    return Response("Item successfully deleted: " + pk)
