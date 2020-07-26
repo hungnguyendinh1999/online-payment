@@ -125,7 +125,7 @@
 		  var form = document.getElementById('payment-form');
 		  var hiddenInput = document.createElement('input');
 		  hiddenInput.setAttribute('type', 'hidden');
-		  hiddenInput.setAttribute('name', 'stripeToken');
+		  hiddenInput.setAttribute('name', 'stripeToken'); // MOST IMPORTANT LINE TO RETRIEVE TOKEN to BACKEND
 		  hiddenInput.setAttribute('value', token.id);
 		  form.appendChild(hiddenInput);
 

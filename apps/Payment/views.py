@@ -205,45 +205,65 @@ Cards API (given the Customer object from Stripe API)
 _______________NOT_READY____________________________
 '''
 class CardList(APIView):
-    # GET return a list of cards
-    def get(self, request, format=None):
-        #given 'customer' Stripe object 
-        # get Card.data
-        return Response()
-
-# GET return a card specified
-@api_view(['GET'])
-def cardDetail(request, pk):
-    #given 'customer' Stripe object
-    #pk is taken from URL (for consistency)
-    # what happens if pk is wrong?
-    card = stripe.Customer.retrieve_source(
-        customer.id,
-        pk,
-    )
-    return Response(card)
-
-# POST create a new card and add to Stripe
-@api_view(['POST'])
-def cardCreate(request):
-    #given 'customer' Stripe object
+    def get_object(self, pk):
+        try:
+            return Customer.objects.get(id=pk)
+        except Customer.DoesNotExist:
+            raise Http404
+    # GET return a list of cards of specific customer from Stripe
+    def get(self, request, customer_id, format=None):
+        #given 'customer' Stripe object
+        customers = self.get_object(customer_id)
+        stripe_customer = stripe.Customer.retrieve(
+            customers.stripe_customerID,
+        )
+        # get Cards.data
+        return Response(stripe_customer.sources.data)
     
-    # verify card if is valid
-    
-    return Response()
-    
-@api_view(['POST'])
-def cardDelete(request):
-    # create a Stripe card here
-    # retrieve Stripe card.id
-    serializer = CustomerSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # POST create a new card and add to Stripe
+    def post(self, request, customer_id, format=None):     
+        # card verification is done automatically (in most cases) by Stripe upon creation
+        new_card = stripe.Customer.create_source(
+            self.get_object(customer_id).stripe_customerID,
+            source= request.POST['stripeToken'],
+        )
+        
+        return Response(new_card)
 
-@api_view(['POST'])
-def cardUpdate(request):
-    # create a Stripe card here
-    # retrieve Stripe card.id
-    serializer = CustomerSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+class CardDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Customer.objects.get(id=pk)
+        except Customer.DoesNotExist:
+            raise Http404
+
+    def get(self, request, customer_id, card_id, format=None):
+        # Retrieve specific card
+        card = stripe.Customer.retrieve_source(
+            self.get_object(customer_id).stripe_customerID,
+            card_id,
+        )
+        return Response(card)
+
+    def delete(self, request, customer_id, card_id, format=None):
+        # !CHECK if card_id is valid (exception handling)!
+
+        # retrieve Stripe Card
+        card = stripe.Customer.delete_source(
+            self.get_object(customer_id).stripe_customerID,
+            card_id,
+        )
+        return Response(card, status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, customer_id, card_id, format=None):
+        '''
+        Try-except Cards API for valid input
+        '''
+        # retrieve Stripe card.id
+        card = stripe.Customer.modify_source(
+            self.get_object(customer_id).stripe_customerID,
+            card_id,
+            name=request.data['name'],
+        )
+        return Response(card)
+        # else return Response(status=status.HTTP_400_BAD_REQUEST)
